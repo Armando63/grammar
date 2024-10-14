@@ -29,7 +29,7 @@ int main()
 
 void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
 {
-    char parrafo[100];
+    char parrafo[MAX];
 
     archivo = fopen(nomArch, "r");
     if (archivo == NULL) 
