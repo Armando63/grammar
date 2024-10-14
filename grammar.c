@@ -10,12 +10,11 @@ typedef struct nod1
 TNodo *crea_nodo(char dato[]);
 void inserta_final(TNodo **cab, char dato[]);
 void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
-//void imprime_lista(TNodo *cab);
+void imprime_lista(TNodo *cab);
 int main()
 {
     FILE *archivo;
-    int cont=0;
-    char caracter,nomArch[50],dato[100];
+    char nomArch[50],dato[100];
     TNodo *cab = NULL;
 
     printf("Escribe el nombre del archivo con todo y .txt \n");
@@ -75,7 +74,7 @@ void inserta_final(TNodo **cab, char dato[])
     }
 }
 
-/* void imprime_lista(TNodo *cab)
+ void imprime_lista(TNodo *cab)
 {
     while (cab != NULL)
     {
@@ -83,4 +82,4 @@ void inserta_final(TNodo **cab, char dato[])
         cab = cab->sig;
     }
 }
-*/
+
