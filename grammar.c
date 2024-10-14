@@ -1,19 +1,11 @@
-#include <main.h>
-typedef struct nod1
-{
-    char info[100];
-    struct nod1 *sig;
-} TNodo;
+#include "main.h"
 
-TNodo *crea_nodo(char dato[]);
-void inserta_final(TNodo **cab, char dato[]);
-void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
-void imprime_lista(TNodo *cab);
+
+
 int main()
 {
     FILE *archivo;
-    int cont=0;
-    char caracter,nomArch[50],dato[100];
+    char nomArch[50],dato[100];
     TNodo *cab = NULL;
 
     printf("Escribe el nombre del archivo con todo y .txt \n");
@@ -21,6 +13,8 @@ int main()
     
     leer_cadena(archivo,nomArch,dato,&cab);
     imprime_lista(cab);
+
+    return EXIT_SUCCESS;
 }
 
 void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
@@ -31,7 +25,7 @@ void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
     if (archivo == NULL) 
     {
         printf("nombre equivocado.\n");
-        return;
+        return EXIT_FAILURE;
     }
 
     while(fgets(parrafo,sizeof(parrafo),archivo)>0)
