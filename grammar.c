@@ -23,6 +23,8 @@ int main()
     
     leer_cadena(archivo,nomArch,dato,&cab);
     imprime_lista(cab);
+
+    return EXIT_SUCCESS;
 }
 
 void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
@@ -33,7 +35,7 @@ void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
     if (archivo == NULL) 
     {
         printf("nombre equivocado.\n");
-        return;
+        return EXIT_FAILURE;
     }
 
     while(fgets(parrafo,sizeof(parrafo),archivo)>0)
