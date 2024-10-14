@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX 100
 typedef struct nod1
 {
-    char info[100];
+    char info[MAX];
     struct nod1 *sig;
 } TNodo;
 
@@ -14,7 +15,7 @@ void imprime_lista(TNodo *cab);
 int main()
 {
     FILE *archivo;
-    char nomArch[50],dato[100];
+    char nomArch[MAX],dato[MAX];
     TNodo *cab = NULL;
 
     printf("Escribe el nombre del archivo con todo y .txt \n");
