@@ -10,8 +10,9 @@ typedef struct nod1
 
 TNodo *crea_nodo(char dato[]);
 void inserta_final(TNodo **cab, char dato[]);
-void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
+int leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
 void imprime_lista(TNodo *cab);
+
 int main()
 {
     FILE *archivo;
@@ -27,7 +28,7 @@ int main()
     return EXIT_SUCCESS;
 }
 
-void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
+int leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
 {
     char parrafo[MAX];
 
@@ -40,6 +41,7 @@ void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
 
     while(fgets(parrafo,sizeof(parrafo),archivo)>0)
     {
+            parrafo[strcspn(parrafo,"\n")]='\0';
             strcpy(dato,parrafo);
             inserta_final(cab,dato);
     }
@@ -77,11 +79,11 @@ void inserta_final(TNodo **cab, char dato[])
     }
 }
 
- void imprime_lista(TNodo *cab)
+void imprime_lista(TNodo *cab)
 {
     while (cab != NULL)
     {
-        printf("%s ", cab->info);
+        printf("%s \n", cab->info);
         cab = cab->sig;
     }
 }
