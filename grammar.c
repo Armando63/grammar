@@ -4,14 +4,17 @@
 #define MAX 100
 typedef struct nod1
 {
-    char info[MAX];
-    struct nod1 *sig;
+   char *ruleIdentifier;
+   char *production;
+   struct nod1 *sig;
 } TNodo;
 
-TNodo *crea_nodo(char dato[]);
-void inserta_final(TNodo **cab, char dato[]);
-int leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
+TNodo *crea_nodo(const char *ruleIdentifier,const char *production);
+void inserta_final(TNodo **cab, char *ruleIdentifier,const char *production);
+// int leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
 void imprime_lista(TNodo *cab);
+void libera_lista(TNodo *cab);
+TNodo *crea_lista(FILE *archivo);
 
 int main()
 {
@@ -22,13 +25,21 @@ int main()
     printf("Escribe el nombre del archivo con todo y .txt \n");
     scanf("%s",nomArch);
     
-    leer_cadena(archivo,nomArch,dato,&cab);
+     archivo = fopen(nomArch, "r");
+    if (archivo == NULL) 
+    {
+        printf("nombre equivocado.\n");
+        return EXIT_FAILURE;
+    }
+
+    // leer_cadena(archivo,nomArch,dato,&cab);
+    cab=crea_lista(archivo);
     imprime_lista(cab);
 
     return EXIT_SUCCESS;
 }
 
-int leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
+/*int leer_cadena(FILE *archivo,char nomArch[],char *ruleIdentifier,const char *production,TNodo **cab)
 {
     char parrafo[MAX];
 
@@ -43,30 +54,30 @@ int leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab)
     {
             parrafo[strcspn(parrafo,"\n")]='\0';
             strcpy(dato,parrafo);
-            inserta_final(cab,dato);
+            inserta_final(cab,ruleIdentifier,production);
     }
+
     fclose(archivo);
 }
+*/
 
-TNodo *crea_nodo(char dato[])
+TNodo *crea_nodo(const char *ruleIdentifier,const char *production)
 {
-    TNodo *aux;
+    TNodo *newNode = (TNodo*)malloc(sizeof(TNodo));
 
-    aux = (TNodo *)malloc(sizeof(TNodo));
-    if (aux != NULL)
-    {
-        strcpy(aux->info,dato);
-        aux->sig = NULL;
-    }
-    return aux;
+    newNode->ruleIdentifier = strdup(ruleIdentifier);
+    newNode->production = strdup(production);
+    newNode->sig=NULL;
+    return newNode;
 }
+    
 
-void inserta_final(TNodo **cab, char dato[])
+void inserta_final(TNodo **cab, char *ruleIdentifier,const char *production)
 {
     TNodo *corre;
     if (*cab == NULL)
     {
-        *cab = crea_nodo(dato);
+        *cab = crea_nodo(ruleIdentifier,production);
     }
     else
     {
@@ -75,16 +86,47 @@ void inserta_final(TNodo **cab, char dato[])
         {
             corre = corre->sig;
         }
-        corre->sig = crea_nodo(dato);
+        corre->sig = crea_nodo(ruleIdentifier,production);
     }
 }
 
 void imprime_lista(TNodo *cab)
 {
-    while (cab != NULL)
+    TNodo *actual=cab;
+    while (actual != NULL)
     {
-        printf("%s \n", cab->info);
-        cab = cab->sig;
+        printf("%s \n", actual->ruleIdentifier);
+        printf("%s \n", actual->production);
+        actual = actual->sig;
     }
 }
 
+void libera_lista(TNodo *cab)
+{
+    TNodo *actual=cab;
+    TNodo *sigNodo;
+
+    while(actual!=NULL)
+    {
+        sigNodo=actual->sig;
+        free(actual->ruleIdentifier);
+        free(actual->production);
+        free(actual);
+        actual = sigNodo;
+    }
+}
+
+TNodo *crea_lista(FILE *archivo)
+{
+    TNodo *cab=NULL;
+    char parrafo[MAX];
+    char ruleIdentifier[MAX];
+    char production[MAX];
+
+    while(fgets(parrafo,sizeof(parrafo),archivo))
+    {
+        parrafo[strcspn(parrafo,"\n")]='\0';
+        inserta_final(&cab,"",parrafo);
+    }
+    return cab;
+}
