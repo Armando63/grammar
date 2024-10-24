@@ -1,20 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define MAX 100
 typedef struct nod1
 {
    char *ruleIdentifier;
-   char *production;
+   char *productions;
    struct nod1 *sig;
 } TNodo;
 
 TNodo *crea_nodo(const char *ruleIdentifier,const char *production);
 void inserta_final(TNodo **cab, char *ruleIdentifier,const char *production);
-// int leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
 void imprime_lista(TNodo *cab);
 void libera_lista(TNodo *cab);
 TNodo *crea_lista(FILE *archivo);
+TNodo *encuentraNodo(TNodo *cab,const char *ruleIdentifier);
+void agregaProduction(TNodo *nodo,const char *production);
+void agrega_actualizaNodo(TNodo **cab, char *ruleIdentifier,const char *production);
+void dividirlinea(const char *linea,char *ruleIdentifier,char  *production);
+
 
 int main()
 {
@@ -32,43 +37,20 @@ int main()
         return EXIT_FAILURE;
     }
 
-    // leer_cadena(archivo,nomArch,dato,&cab);
     cab=crea_lista(archivo);
     imprime_lista(cab);
 
     return EXIT_SUCCESS;
 }
 
-/*int leer_cadena(FILE *archivo,char nomArch[],char *ruleIdentifier,const char *production,TNodo **cab)
-{
-    char parrafo[MAX];
-
-    archivo = fopen(nomArch, "r");
-    if (archivo == NULL) 
-    {
-        printf("nombre equivocado.\n");
-        return EXIT_FAILURE;
-    }
-
-    while(fgets(parrafo,sizeof(parrafo),archivo)>0)
-    {
-            parrafo[strcspn(parrafo,"\n")]='\0';
-            strcpy(dato,parrafo);
-            inserta_final(cab,ruleIdentifier,production);
-    }
-
-    fclose(archivo);
-}
-*/
-
 TNodo *crea_nodo(const char *ruleIdentifier,const char *production)
 {
-    TNodo *newNode = (TNodo*)malloc(sizeof(TNodo));
+    TNodo *nuevoNodo = (TNodo*)malloc(sizeof(TNodo));
 
-    newNode->ruleIdentifier = strdup(ruleIdentifier);
-    newNode->production = strdup(production);
-    newNode->sig=NULL;
-    return newNode;
+    nuevoNodo->ruleIdentifier = strdup(ruleIdentifier);
+    nuevoNodo->productions = strdup(production);
+    nuevoNodo->sig=NULL;
+    return nuevoNodo;
 }
     
 
@@ -96,7 +78,7 @@ void imprime_lista(TNodo *cab)
     while (actual != NULL)
     {
         printf("%s \n", actual->ruleIdentifier);
-        printf("%s \n", actual->production);
+        printf("%s \n", actual->productions);
         actual = actual->sig;
     }
 }
@@ -110,7 +92,7 @@ void libera_lista(TNodo *cab)
     {
         sigNodo=actual->sig;
         free(actual->ruleIdentifier);
-        free(actual->production);
+        free(actual->productions);
         free(actual);
         actual = sigNodo;
     }
@@ -129,4 +111,57 @@ TNodo *crea_lista(FILE *archivo)
         inserta_final(&cab,"",parrafo);
     }
     return cab;
+}
+
+TNodo *encuentraNodo(TNodo *cab,const char *ruleIdentifier)
+{
+    TNodo *actual = cab;
+
+    while(actual != NULL)
+    {
+        if(strcmp(actual->ruleIdentifier,ruleIdentifier)==0)
+        {
+            return actual;
+        }
+       actual=actual->sig; 
+    }
+    return NULL;
+}
+
+void agregaProduction(TNodo *nodo,const char *production)
+{
+    size_t nuevoTAM=strlen(nodo->productions)+strlen(production)+4;
+
+    nodo->productions=(char *)realloc(nodo->productions,nuevoTAM);
+
+    strcat(nodo->productions," | ");
+    strcat(nodo->productions,production);
+}
+
+void agrega_actualizaNodo(TNodo **cab, char *ruleIdentifier,const char *production)
+{
+    TNodo *nodoExistente = encuentraNodo(*cab,ruleIdentifier);
+
+    if(nodoExistente != NULL)
+    {
+        agregaProduction(nodoExistente,production);
+    }
+    else
+    {
+        TNodo *nuevoNodo = crea_nodo(ruleIdentifier,production);
+        if(*cab==NULL)
+        {
+            *cab=nuevoNodo;
+        }
+        else
+        {
+            TNodo *temp=*cab;
+            while(temp->sig !=NULL)
+            {
+                temp = temp->sig;
+            }
+            temp->sig=nuevoNodo;
+        }
+    }
+
 }
