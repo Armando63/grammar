@@ -1,3 +1,4 @@
+/*
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,4 +14,4 @@ typedef struct nod1
 TNodo *crea_nodo(char dato[]);
 void inserta_final(TNodo **cab, char dato[]);
 void leer_cadena(FILE *archivo,char nomArch[],char dato[],TNodo **cab);
-void imprime_lista(TNodo *cab);
+void imprime_lista(TNodo *cab); */
