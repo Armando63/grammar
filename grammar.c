@@ -18,6 +18,7 @@ TNodo *encuentraNodo(TNodo *cab, const char *ruleIdentifier);
 void agregaProduction(TNodo *nodo, const char *production);
 void agrega_actualizaNodo(TNodo **cab, char *ruleIdentifier, const char *production);
 void dividirparrafo(const char *linea, char *ruleIdentifier, char *production);
+void hacer_recursividad(TNodo **cab);
 
 int main()
 {
@@ -36,6 +37,7 @@ int main()
     }
 
     cab = crea_lista(archivo);
+    hacer_recursividad(&cab);
     imprime_lista(cab);
 
     return EXIT_SUCCESS;
@@ -156,4 +158,28 @@ void dividirparrafo(const char *parrafo, char *ruleIdentifier, char *production)
 
         strcpy(production, delimitador + 2);
     }
+}
+
+void hacer_recursividad(TNodo **cab)
+{
+    char *cadaux;
+
+    if((*cab)->sig==NULL)
+    {
+
+        return;
+    }
+    else
+    {
+
+    TNodo *aux=encuentraNodo(*cab,((*cab)->sig)->ruleIdentifier);
+    if(aux)
+    {
+        cadaux=malloc(sizeof((*cab)->productions));
+        strcpy(cadaux,(*cab)->productions);
+
+    }
+    hacer_recursividad(&(*cab)->sig);
+    }
+     agrega_actualizaNodo(cab,((*cab)->sig)->ruleIdentifier,cadaux);
 }
