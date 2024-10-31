@@ -162,7 +162,6 @@ void dividirparrafo(const char *parrafo, char *ruleIdentifier, char *production)
 
 void hacer_recursividad(TNodo **cab)
 {
-    char *cadaux;
 
     if((*cab)->sig==NULL)
     {
@@ -171,15 +170,7 @@ void hacer_recursividad(TNodo **cab)
     }
     else
     {
-
-    TNodo *aux=encuentraNodo(*cab,((*cab)->sig)->ruleIdentifier);
-    if(aux)
-    {
-        cadaux=malloc(sizeof((*cab)->productions));
-        strcpy(cadaux,(*cab)->productions);
-
-    }
+    agrega_actualizaNodo(cab,((*cab)->sig)->ruleIdentifier,(*cab)->productions);
     hacer_recursividad(&(*cab)->sig);
     }
-     agrega_actualizaNodo(cab,((*cab)->sig)->ruleIdentifier,cadaux);
 }
